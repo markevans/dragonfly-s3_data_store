@@ -79,13 +79,6 @@ describe Dragonfly::S3DataStore do
       new_content.data.should == 'eggheads'
     end
 
-    it "should work fine when not using the filesystem" do
-      @data_store.use_filesystem = false
-      uid = @data_store.write(content)
-      @data_store.read(new_content, uid)
-      new_content.data.should == "eggheads"
-    end
-
     if enabled # Fog.mock! doesn't act consistently here
       it "should reset the connection and try again if Fog throws a socket EOFError" do
         @data_store.storage.should_receive(:put_object).exactly(:once).and_raise(Excon::Errors::SocketError.new(EOFError.new))

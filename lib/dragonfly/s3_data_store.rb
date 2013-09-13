@@ -23,7 +23,6 @@ module Dragonfly
       @access_key_id     = opts[:access_key_id]
       @secret_access_key = opts[:secret_access_key]
       @region            = opts[:region]
-      @use_filesystem    = opts[:use_filesystem]
       @storage_headers   = opts[:storage_headers] || {'x-amz-acl' => 'public-read'}
       @url_scheme        = opts[:url_scheme] || 'http'
       @url_host          = opts[:url_host]
@@ -31,11 +30,6 @@ module Dragonfly
     end
 
     attr_accessor :bucket_name, :access_key_id, :secret_access_key, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile
-    attr_writer :use_filesystem
-
-    def use_filesystem?
-      @use_filesystem != false
-    end
 
     def write(content, opts={})
       ensure_configured
@@ -46,12 +40,8 @@ module Dragonfly
       uid = opts[:path] || generate_uid(content.name || 'file')
 
       rescuing_socket_errors do
-        if use_filesystem?
-          content.file do |f|
-            storage.put_object(bucket_name, uid, f, full_storage_headers(headers, content.meta))
-          end
-        else
-          storage.put_object(bucket_name, uid, content.data, full_storage_headers(headers, content.meta))
+        content.file do |f|
+          storage.put_object(bucket_name, uid, f, full_storage_headers(headers, content.meta))
         end
       end
 
