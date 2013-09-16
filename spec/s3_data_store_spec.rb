@@ -54,6 +54,15 @@ describe Dragonfly::S3DataStore do
   let (:content) { Dragonfly::Content.new(app, "eggheads") }
   let (:new_content) { Dragonfly::Content.new(app) }
 
+  describe "registering with a symbol" do
+    it "registers a symbol for configuring" do
+      app.configure do
+        datastore :s3
+      end
+      app.datastore.should be_a(Dragonfly::S3DataStore)
+    end
+  end
+
   describe "write" do
     it "should use the name from the content if set" do
       content.name = 'doobie.doo'

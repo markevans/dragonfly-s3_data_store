@@ -1,6 +1,8 @@
 require 'fog'
 require 'dragonfly'
 
+Dragonfly::App.register_datastore(:s3){ Dragonfly::S3DataStore }
+
 module Dragonfly
   class S3DataStore
 
