@@ -9,7 +9,7 @@ describe Dragonfly::S3DataStore do
   # key: XXXXXXXXXX
   # secret: XXXXXXXXXX
   # enabled: true
-  if File.exist?(file = File.expand_path('../../../../.s3_spec.yml', __FILE__))
+  if File.exist?(file = File.expand_path('../../.s3_spec.yml', __FILE__))
     config = YAML.load_file(file)
     KEY = config['key']
     SECRET = config['secret']
@@ -24,7 +24,6 @@ describe Dragonfly::S3DataStore do
     BUCKET_NAME = "dragonfly-test-#{Time.now.to_i.to_s(36)}"
 
     before(:each) do
-      WebMock.allow_net_connect!
       @data_store = Dragonfly::S3DataStore.new(
         :bucket_name => BUCKET_NAME,
         :access_key_id => KEY,
@@ -151,7 +150,7 @@ describe Dragonfly::S3DataStore do
         @data_store.use_iam_profile = true
         @data_store.secret_access_key = nil
         @data_store.access_key_id = nil
-        proc{ @data_store.write(content) }.should_not raise_error(Dragonfly::S3DataStore::NotConfigured)
+        expect{ @data_store.write(content) }.not_to raise_error
       end
     end
 
