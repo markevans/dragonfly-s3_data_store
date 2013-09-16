@@ -147,6 +147,9 @@ describe Dragonfly::S3DataStore do
 
     if !enabled #this will fail since the specs are not running on an ec2 instance with an iam role defined
       it 'should allow missing secret key and access key on write if iam profiles are allowed' do
+        # This is slightly brittle but it's annoying waiting for fog doing stuff
+        @data_store.storage.stub(:get_bucket_location => nil, :put_object => nil)
+
         @data_store.use_iam_profile = true
         @data_store.secret_access_key = nil
         @data_store.access_key_id = nil
