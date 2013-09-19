@@ -1,6 +1,6 @@
 # Dragonfly::S3DataStore
 
-Amazon AWS S3 data store for use with the (http://github.com/markevans/dragonfly)[Dragonfly] gem.
+Amazon AWS S3 data store for use with the [Dragonfly](http://github.com/markevans/dragonfly) gem.
 
 ## Gemfile
 
@@ -28,14 +28,14 @@ end
 ### Available configuration options
 
 ```ruby
-bucket_name
-access_key_id
-secret_access_key
-region               # default 'us-east-1', see Dragonfly::S3DataStore::REGIONS for options
-storage_headers      # defaults to {'x-amz-acl' => 'public-read'}, can be overridden per-write - see below
-url_scheme           # defaults to "http"
-url_host             # defaults to "<bucket-name>.s3.amazonaws.com"
-use_iam_profile      # boolean - if true, no need for access_key_id or secret_access_key
+:bucket_name
+:access_key_id
+:secret_access_key
+:region               # default 'us-east-1', see Dragonfly::S3DataStore::REGIONS for options
+:storage_headers      # defaults to {'x-amz-acl' => 'public-read'}, can be overridden per-write - see below
+:url_scheme           # defaults to "http"
+:url_host             # defaults to "<bucket-name>.s3.amazonaws.com"
+:use_iam_profile      # boolean - if true, no need for access_key_id or secret_access_key
 ```
 
 ### Per-storage options
