@@ -50,12 +50,12 @@ module Dragonfly
       uid
     end
 
-    def read(content, uid)
+    def read(uid)
       ensure_configured
       response = rescuing_socket_errors{ storage.get_object(bucket_name, uid) }
-      content.update(response.body, headers_to_meta(response.headers))
+      [response.body, headers_to_meta(response.headers)]
     rescue Excon::Errors::NotFound => e
-      throw :not_found, uid
+      nil
     end
 
     def destroy(uid)
