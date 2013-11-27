@@ -34,7 +34,7 @@ end
 :region               # default 'us-east-1', see Dragonfly::S3DataStore::REGIONS for options
 :storage_headers      # defaults to {'x-amz-acl' => 'public-read'}, can be overridden per-write - see below
 :url_scheme           # defaults to "http"
-:url_host             # defaults to "<bucket-name>.s3.amazonaws.com"
+:url_host             # defaults to "<bucket-name>.s3.amazonaws.com", or "s3.amazonaws.com/<bucket-name>" if not a valid subdomain
 :use_iam_profile      # boolean - if true, no need for access_key_id or secret_access_key
 ```
 
