@@ -234,6 +234,12 @@ describe Dragonfly::S3DataStore do
       @data_store.url_for(@uid).should == "http://#{BUCKET_NAME}.s3.amazonaws.com/some/path/on/s3"
     end
 
+    it "should use path style if the bucket is not a valid S3 subdomain" do
+      bucket_name = BUCKET_NAME.upcase
+      @data_store.bucket_name = bucket_name
+      @data_store.url_for(@uid).should == "http://s3.amazonaws.com/#{bucket_name}/some/path/on/s3"
+    end
+
     it "should use the bucket subdomain for other regions too" do
       @data_store.region = 'eu-west-1'
       @data_store.url_for(@uid).should == "http://#{BUCKET_NAME}.s3.amazonaws.com/some/path/on/s3"

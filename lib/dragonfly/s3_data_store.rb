@@ -20,6 +20,8 @@ module Dragonfly
       'sa-east-1' => 's3-sa-east-1.amazonaws.com'
     }
 
+    SUBDOMAIN_PATTERN = /^[a-z0-9][a-z0-9.-]+[a-z0-9]$/
+
     def initialize(opts={})
       @bucket_name       = opts[:bucket_name]
       @access_key_id     = opts[:access_key_id]
@@ -69,7 +71,9 @@ module Dragonfly
         storage.get_object_https_url(bucket_name, uid, opts[:expires])
       else
         scheme = opts[:scheme] || url_scheme
-        host   = opts[:host]   || url_host || "#{bucket_name}.s3.amazonaws.com"
+        host   = opts[:host]   || url_host || (
+          bucket_name =~ SUBDOMAIN_PATTERN ? "#{bucket_name}.s3.amazonaws.com" : "s3.amazonaws.com/#{bucket_name}"
+        )
         "#{scheme}://#{host}/#{uid}"
       end
     end
