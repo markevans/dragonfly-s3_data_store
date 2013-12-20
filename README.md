@@ -48,8 +48,12 @@ or
 ```ruby
 class MyModel
   dragonfly_accessor :photo do
-    storage_path { "some/path/#{some_instance_method}/#{rand(100)}" }
-    storage_headers { {"x-amz-acl" => "public-read-write"} }
+    storage_options do |attachment|
+      {
+        path: "some/path/#{some_instance_method}/#{rand(100)}",
+        headers: {"x-amz-acl" => "public-read-write"}
+      }
+    end
   end
 end
 ```
