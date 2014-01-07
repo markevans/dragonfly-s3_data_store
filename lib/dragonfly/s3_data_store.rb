@@ -46,7 +46,7 @@ module Dragonfly
 
       rescuing_socket_errors do
         content.file do |f|
-          storage.put_object(bucket_name, prefixed_uid(uid), f, full_storage_headers(headers, content.meta))
+          storage.put_object(bucket_name, full_path(uid), f, full_storage_headers(headers, content.meta))
         end
       end
 
@@ -55,32 +55,28 @@ module Dragonfly
 
     def read(uid)
       ensure_configured
-      response = rescuing_socket_errors{ storage.get_object(bucket_name, prefixed_uid(uid)) }
+      response = rescuing_socket_errors{ storage.get_object(bucket_name, full_path(uid)) }
       [response.body, headers_to_meta(response.headers)]
     rescue Excon::Errors::NotFound => e
       nil
     end
 
     def destroy(uid)
-      rescuing_socket_errors{ storage.delete_object(bucket_name, prefixed_uid(uid)) }
+      rescuing_socket_errors{ storage.delete_object(bucket_name, full_path(uid)) }
     rescue Excon::Errors::NotFound, Excon::Errors::Conflict => e
       Dragonfly.warn("#{self.class.name} destroy error: #{e}")
     end
 
     def url_for(uid, opts={})
       if opts[:expires]
-        storage.get_object_https_url(bucket_name, prefixed_uid(uid), opts[:expires])
+        storage.get_object_https_url(bucket_name, full_path(uid), opts[:expires])
       else
         scheme = opts[:scheme] || url_scheme
         host   = opts[:host]   || url_host || (
           bucket_name =~ SUBDOMAIN_PATTERN ? "#{bucket_name}.s3.amazonaws.com" : "s3.amazonaws.com/#{bucket_name}"
         )
-        "#{scheme}://#{host}/#{prefixed_uid(uid)}"
+        "#{scheme}://#{host}/#{full_path(uid)}"
       end
-    end
-
-    def prefixed_uid(uid)
-      File.join *[root_path, uid].compact
     end
 
     def domain
@@ -138,6 +134,10 @@ module Dragonfly
 
     def generate_uid(name)
       "#{Time.now.strftime '%Y/%m/%d/%H/%M/%S'}/#{rand(1000)}/#{name.gsub(/[^\w.]+/, '_')}"
+    end
+
+    def full_path(uid)
+      File.join *[root_path, uid].compact
     end
 
     def full_storage_headers(headers, meta)
