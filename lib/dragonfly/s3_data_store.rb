@@ -68,8 +68,8 @@ module Dragonfly
     end
 
     def url_for(uid, opts={})
-      if opts && opts[:expires]
-        storage.get_object_https_url(bucket_name, uid, opts[:expires])
+      if opts[:expires]
+        storage.get_object_https_url(bucket_name, prefixed_uid(uid), opts[:expires])
       else
         scheme = opts[:scheme] || url_scheme
         host   = opts[:host]   || url_host || (
@@ -170,4 +170,3 @@ module Dragonfly
 
   end
 end
-

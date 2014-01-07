@@ -198,9 +198,16 @@ describe Dragonfly::S3DataStore do
     end
 
     describe "url_for" do
+      before do
+        @uid = @data_store.write(content)
+      end
+
       it "returns the uid prefixed with the root_path" do
-        uid = @data_store.write(content)
-        @data_store.url_for(uid).should =~ /some\/path\/.*\/something\.png/
+        @data_store.url_for(@uid).should =~ /some\/path\/.*\/something\.png/
+      end
+
+      it "gives an expiring url" do
+        @data_store.url_for(@uid, :expires => 1301476942).should =~ /\/some\/path\/.*\/something\.png\?AWSAccessKeyId=/
       end
     end
   end
