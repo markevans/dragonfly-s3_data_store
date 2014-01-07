@@ -31,9 +31,10 @@ module Dragonfly
       @url_scheme        = opts[:url_scheme] || 'http'
       @url_host          = opts[:url_host]
       @use_iam_profile   = opts[:use_iam_profile]
+      @root_path         = opts[:root_path]
     end
 
-    attr_accessor :bucket_name, :access_key_id, :secret_access_key, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile
+    attr_accessor :bucket_name, :access_key_id, :secret_access_key, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile, :root_path
 
     def write(content, opts={})
       ensure_configured
@@ -45,7 +46,7 @@ module Dragonfly
 
       rescuing_socket_errors do
         content.file do |f|
-          storage.put_object(bucket_name, uid, f, full_storage_headers(headers, content.meta))
+          storage.put_object(bucket_name, prefixed_uid(uid), f, full_storage_headers(headers, content.meta))
         end
       end
 
@@ -54,14 +55,14 @@ module Dragonfly
 
     def read(uid)
       ensure_configured
-      response = rescuing_socket_errors{ storage.get_object(bucket_name, uid) }
+      response = rescuing_socket_errors{ storage.get_object(bucket_name, prefixed_uid(uid)) }
       [response.body, headers_to_meta(response.headers)]
     rescue Excon::Errors::NotFound => e
       nil
     end
 
     def destroy(uid)
-      rescuing_socket_errors{ storage.delete_object(bucket_name, uid) }
+      rescuing_socket_errors{ storage.delete_object(bucket_name, prefixed_uid(uid)) }
     rescue Excon::Errors::NotFound, Excon::Errors::Conflict => e
       Dragonfly.warn("#{self.class.name} destroy error: #{e}")
     end
@@ -74,8 +75,12 @@ module Dragonfly
         host   = opts[:host]   || url_host || (
           bucket_name =~ SUBDOMAIN_PATTERN ? "#{bucket_name}.s3.amazonaws.com" : "s3.amazonaws.com/#{bucket_name}"
         )
-        "#{scheme}://#{host}/#{uid}"
+        "#{scheme}://#{host}/#{prefixed_uid(uid)}"
       end
+    end
+
+    def prefixed_uid(uid)
+      File.join *[root_path, uid].compact
     end
 
     def domain

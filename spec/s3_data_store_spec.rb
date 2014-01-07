@@ -165,7 +165,44 @@ describe Dragonfly::S3DataStore do
         expect{ @data_store.write(content) }.not_to raise_error
       end
     end
+  end
 
+  describe "root_path" do
+    before do
+      content.name = "something.png"
+      @data_store.root_path = "some/path"
+    end
+
+    it "stores files in the provided sub directory" do
+      @data_store.storage.should_receive(:put_object).with(BUCKET_NAME, /^some\/path\/.*\/something\.png$/, anything, anything)
+      @data_store.write(content)
+    end
+
+    it "finds files in the provided sub directory" do
+      mock_response = double("response", body: "", headers: {})
+      uid = @data_store.write(content)
+      @data_store.storage.should_receive(:get_object).with(BUCKET_NAME, /^some\/path\/.*\/something\.png$/).and_return(mock_response)
+      @data_store.read(uid)
+    end
+
+    it "does not alter the uid" do
+      uid = @data_store.write(content)
+      uid.should include("something.png")
+      uid.should_not include("some/path")
+    end
+
+    it "destroys files in the provided sub directory" do
+      uid = @data_store.write(content)
+      @data_store.storage.should_receive(:delete_object).with(BUCKET_NAME, /^some\/path\/.*\/something\.png$/)
+      @data_store.destroy(uid)
+    end
+
+    describe "url_for" do
+      it "returns the uid prefixed with the root_path" do
+        uid = @data_store.write(content)
+        @data_store.url_for(uid).should =~ /some\/path\/.*\/something\.png/
+      end
+    end
   end
 
   describe "autocreating the bucket" do
