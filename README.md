@@ -9,6 +9,11 @@ gem 'dragonfly-s3_data_store'
 ```
 
 ## Usage
+In your dragonfly config file add the require at the top:
+
+```ruby
+ require 'dragonfly/s3_data_store'
+```
 
 In your dragonfly config block (with default options):
 
