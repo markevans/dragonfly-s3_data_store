@@ -37,6 +37,7 @@ end
 :url_scheme           # defaults to "http"
 :url_host             # defaults to "<bucket-name>.s3.amazonaws.com", or "s3.amazonaws.com/<bucket-name>" if not a valid subdomain
 :use_iam_profile      # boolean - if true, no need for access_key_id or secret_access_key
+:root_path            # store all content under a subdirectory - uids will be relative to this - defaults to nil
 ```
 
 ### Per-storage options
