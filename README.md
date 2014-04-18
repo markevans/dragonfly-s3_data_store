@@ -38,6 +38,7 @@ end
 :url_host             # defaults to "<bucket-name>.s3.amazonaws.com", or "s3.amazonaws.com/<bucket-name>" if not a valid subdomain
 :use_iam_profile      # boolean - if true, no need for access_key_id or secret_access_key
 :root_path            # store all content under a subdirectory - uids will be relative to this - defaults to nil
+:fog_storage_options  # hash for passing any extra options to Fog::Storage.new, e.g. {path_style: true}
 ```
 
 ### Per-storage options
