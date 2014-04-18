@@ -333,9 +333,9 @@ describe Dragonfly::S3DataStore do
     end
   end
 
-  describe "storage_options" do
+  describe "fog_storage_options" do
     it "adds options to Fog::Storage object" do
-      @data_store.storage_options = {:random_option => 'look at me!'}
+      @data_store.fog_storage_options = {:random_option => 'look at me!'}
       Fog::Storage.should_receive(:new).with do |hash|
         hash[:random_option].should == 'look at me!'
         hash[:aws_access_key_id].should match /\w+/

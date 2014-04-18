@@ -23,19 +23,19 @@ module Dragonfly
     SUBDOMAIN_PATTERN = /^[a-z0-9][a-z0-9.-]+[a-z0-9]$/
 
     def initialize(opts={})
-      @bucket_name       = opts[:bucket_name]
-      @access_key_id     = opts[:access_key_id]
+      @bucket_name = opts[:bucket_name]
+      @access_key_id = opts[:access_key_id]
       @secret_access_key = opts[:secret_access_key]
-      @region            = opts[:region]
-      @storage_headers   = opts[:storage_headers] || {'x-amz-acl' => 'public-read'}
-      @url_scheme        = opts[:url_scheme] || 'http'
-      @url_host          = opts[:url_host]
-      @use_iam_profile   = opts[:use_iam_profile]
-      @root_path         = opts[:root_path]
-      @storage_options   = opts[:storage_options] || {}
+      @region = opts[:region]
+      @storage_headers = opts[:storage_headers] || {'x-amz-acl' => 'public-read'}
+      @url_scheme = opts[:url_scheme] || 'http'
+      @url_host = opts[:url_host]
+      @use_iam_profile = opts[:use_iam_profile]
+      @root_path = opts[:root_path]
+      @fog_storage_options = opts[:fog_storage_options] || {}
     end
 
-    attr_accessor :bucket_name, :access_key_id, :secret_access_key, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile, :root_path, :storage_options
+    attr_accessor :bucket_name, :access_key_id, :secret_access_key, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile, :root_path, :fog_storage_options
 
     def write(content, opts={})
       ensure_configured
@@ -86,7 +86,7 @@ module Dragonfly
 
     def storage
       @storage ||= begin
-        storage = Fog::Storage.new(storage_options.merge({
+        storage = Fog::Storage.new(fog_storage_options.merge({
           :provider => 'AWS',
           :aws_access_key_id => access_key_id,
           :aws_secret_access_key => secret_access_key,
