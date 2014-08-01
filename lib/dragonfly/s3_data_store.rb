@@ -1,5 +1,6 @@
 require 'fog'
 require 'dragonfly'
+require 'securerandom'
 
 Dragonfly::App.register_datastore(:s3){ Dragonfly::S3DataStore }
 
@@ -134,7 +135,7 @@ module Dragonfly
     end
 
     def generate_uid(name)
-      "#{Time.now.strftime '%Y/%m/%d/%H/%M/%S'}/#{rand(1000)}/#{name.gsub(/[^\w.]+/, '_')}"
+      "#{Time.now.strftime '%Y/%m/%d/%H/%M/%S'}/#{SecureRandom.uuid}/#{name.gsub(/[^\w.]+/, '_')}"
     end
 
     def full_path(uid)

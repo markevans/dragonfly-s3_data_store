@@ -67,7 +67,7 @@ describe Dragonfly::S3DataStore do
     it "should use the name from the content if set" do
       content.name = 'doobie.doo'
       uid = @data_store.write(content)
-      uid.should =~ /doobie\.doo$/
+      uid.should =~ /[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}\/doobie\.doo$/
       new_content.update(*@data_store.read(uid))
       new_content.data.should == 'eggheads'
     end
@@ -75,7 +75,7 @@ describe Dragonfly::S3DataStore do
     it "should work ok with files with funny names" do
       content.name = "A Picture with many spaces in its name (at 20:00 pm).png"
       uid = @data_store.write(content)
-      uid.should =~ /A_Picture_with_many_spaces_in_its_name_at_20_00_pm_\.png$/
+      uid.should =~ /[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}\/A_Picture_with_many_spaces_in_its_name_at_20_00_pm_\.png$/
       new_content.update(*@data_store.read(uid))
       new_content.data.should == 'eggheads'
     end
