@@ -32,13 +32,14 @@ end
 :bucket_name
 :access_key_id
 :secret_access_key
-:region               # default 'us-east-1', see Dragonfly::S3DataStore::REGIONS for options
-:storage_headers      # defaults to {'x-amz-acl' => 'public-read'}, can be overridden per-write - see below
-:url_scheme           # defaults to "http"
-:url_host             # defaults to "<bucket-name>.s3.amazonaws.com", or "s3.amazonaws.com/<bucket-name>" if not a valid subdomain
-:use_iam_profile      # boolean - if true, no need for access_key_id or secret_access_key
-:root_path            # store all content under a subdirectory - uids will be relative to this - defaults to nil
-:fog_storage_options  # hash for passing any extra options to Fog::Storage.new, e.g. {path_style: true}
+:region                  # default 'us-east-1', see Dragonfly::S3DataStore::REGIONS for options
+:storage_headers         # defaults to {'x-amz-acl' => 'public-read'}, can be overridden per-write - see below
+:url_scheme              # defaults to "http"
+:url_host                # defaults to "<bucket-name>.s3.amazonaws.com", or "s3.amazonaws.com/<bucket-name>" if not a valid subdomain
+:use_iam_profile         # boolean - if true, no need for access_key_id or secret_access_key
+:root_path               # store all content under a subdirectory - uids will be relative to this - defaults to nil
+:fog_storage_options     # hash for passing any extra options to Fog::Storage.new, e.g. {path_style: true}
+:secondary_bucket_names  # you can provide an array of secondary buckets to search for a file – useful for staging or development server to avoid copying production bucket
 ```
 
 ### Per-storage options

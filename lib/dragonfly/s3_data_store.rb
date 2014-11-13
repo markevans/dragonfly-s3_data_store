@@ -24,6 +24,7 @@ module Dragonfly
 
     def initialize(opts={})
       @bucket_name = opts[:bucket_name]
+      @secondary_bucket_names = Array(opts[:secondary_bucket_names])
       @access_key_id = opts[:access_key_id]
       @secret_access_key = opts[:secret_access_key]
       @region = opts[:region]
@@ -35,7 +36,8 @@ module Dragonfly
       @fog_storage_options = opts[:fog_storage_options] || {}
     end
 
-    attr_accessor :bucket_name, :access_key_id, :secret_access_key, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile, :root_path, :fog_storage_options
+    attr_accessor :bucket_name, :secondary_bucket_names, :access_key_id, :secret_access_key, :region,
+      :storage_headers, :url_scheme, :url_host, :use_iam_profile, :root_path, :fog_storage_options
 
     def write(content, opts={})
       ensure_configured
@@ -56,10 +58,15 @@ module Dragonfly
 
     def read(uid)
       ensure_configured
-      response = rescuing_socket_errors{ storage.get_object(bucket_name, full_path(uid)) }
-      [response.body, headers_to_meta(response.headers)]
-    rescue Excon::Errors::NotFound => e
-      nil
+
+      response = perform_read uid, bucket_name
+      unless response
+        secondary_bucket_names.find do |secondary_bucket_name|
+          response = perform_read uid, secondary_bucket_name
+        end
+      end
+
+      response
     end
 
     def destroy(uid)
@@ -106,6 +113,13 @@ module Dragonfly
     end
 
     private
+
+    def perform_read(uid, bucket_name)
+      response = rescuing_socket_errors{ storage.get_object(bucket_name, full_path(uid)) }
+      [response.body, headers_to_meta(response.headers)]
+    rescue Excon::Errors::NotFound
+      nil
+    end
 
     def ensure_configured
       unless @configured
