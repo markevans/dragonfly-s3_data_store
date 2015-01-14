@@ -68,9 +68,11 @@ module Dragonfly
       Dragonfly.warn("#{self.class.name} destroy error: #{e}")
     end
 
+    # Use response_content_disposition: "attachment" as an option
+    # to get an URL that downloads the file
     def url_for(uid, opts={})
-      if opts[:expires]
-        storage.get_object_https_url(bucket_name, full_path(uid), opts[:expires])
+      if expires = opts.delete(:expires)
+        storage.get_object_https_url(bucket_name, full_path(uid), expires, opts)
       else
         scheme = opts[:scheme] || url_scheme
         host   = opts[:host]   || url_host || (
