@@ -68,7 +68,7 @@ module Dragonfly
       Dragonfly.warn("#{self.class.name} destroy error: #{e}")
     end
 
-    # Use response_content_disposition: "attachment" as an option
+    # Use { query: { 'response-content-disposition' => "attachment" } } as an option
     # to get an URL that downloads the file
     def url_for(uid, opts={})
       if expires = opts.delete(:expires)
