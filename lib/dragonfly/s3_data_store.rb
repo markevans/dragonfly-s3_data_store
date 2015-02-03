@@ -1,4 +1,4 @@
-require 'fog'
+require 'fog/aws'
 require 'dragonfly'
 
 Dragonfly::App.register_datastore(:s3){ Dragonfly::S3DataStore }
