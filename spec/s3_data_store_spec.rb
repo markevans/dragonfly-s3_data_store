@@ -75,7 +75,7 @@ describe Dragonfly::S3DataStore do
     it "should work ok with files with funny names" do
       content.name = "A Picture with many spaces in its name (at 20:00 pm).png"
       uid = @data_store.write(content)
-      uid.should =~ /A_Picture_with_many_spaces_in_its_name_at_20_00_pm_\.png$/
+      uid.should =~ /A Picture with many spaces in its name \(at 20:00 pm\)\.png/
       new_content.update(*@data_store.read(uid))
       new_content.data.should == 'eggheads'
     end

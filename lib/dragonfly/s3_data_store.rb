@@ -136,7 +136,7 @@ module Dragonfly
     end
 
     def generate_uid(name)
-      "#{Time.now.strftime '%Y/%m/%d/%H/%M/%S'}/#{rand(1000)}/#{name.gsub(/[^\w.]+/, '_')}"
+      "#{Time.now.strftime '%Y/%m/%d/%H/%M/%S'}/#{rand(1000)}/#{name}"
     end
 
     def full_path(uid)
