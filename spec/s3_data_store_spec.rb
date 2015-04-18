@@ -331,6 +331,13 @@ describe Dragonfly::S3DataStore do
       meta['some'].should == 'meta'
       meta['wo'].should == 4
     end
+
+    it "works with non ascii character" do
+      content = Dragonfly::Content.new(app, "hi", "name" => "こんにちは.txt")
+      uid = @data_store.write(content)
+      c, meta = @data_store.read(uid)
+      meta['name'].should == 'こんにちは.txt'
+    end
   end
 
   describe "fog_storage_options" do

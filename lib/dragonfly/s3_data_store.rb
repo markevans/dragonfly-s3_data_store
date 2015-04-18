@@ -1,5 +1,6 @@
 require 'fog/aws'
 require 'dragonfly'
+require 'cgi'
 
 Dragonfly::App.register_datastore(:s3){ Dragonfly::S3DataStore }
 
@@ -149,13 +150,14 @@ module Dragonfly
     def headers_to_meta(headers)
       json = headers['x-amz-meta-json']
       if json && !json.empty?
-        Serializer.json_decode(json)
+        unescape_meta_values(Serializer.json_decode(json))
       elsif marshal_data = headers['x-amz-meta-extra']
         Utils.stringify_keys(Serializer.marshal_b64_decode(marshal_data))
       end
     end
 
     def meta_to_headers(meta)
+      meta = escape_meta_values(meta)
       {'x-amz-meta-json' => Serializer.json_encode(meta)}
     end
 
@@ -168,6 +170,20 @@ module Dragonfly
     rescue Excon::Errors::SocketError => e
       storage.reload
       yield
+    end
+
+    def escape_meta_values(meta)
+      meta.inject({}) {|hash, (key, value)|
+        hash[key] = value.is_a?(String) ? CGI.escape(value) : value
+        hash
+      }
+    end
+
+    def unescape_meta_values(meta)
+      meta.inject({}) {|hash, (key, value)|
+        hash[key] = value.is_a?(String) ? CGI.unescape(value) : value
+        hash
+      }
     end
 
   end
