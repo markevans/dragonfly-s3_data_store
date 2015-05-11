@@ -290,9 +290,8 @@ describe Dragonfly::S3DataStore do
     end
 
     it "should give an expiring url" do
-
       @data_store.url_for(@uid, :expires => 1301476942).should =~
-        %r{^https://#{BUCKET_NAME}\.#{@data_store.domain}/some/path/on/s3\?X-Amz-Expires}
+        %r{^https://#{BUCKET_NAME}\.#{@data_store.domain}/some/path/on/s3\?X-Amz-Expires=}
     end
 
     it "should allow for using https" do
