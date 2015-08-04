@@ -95,3 +95,9 @@ or with a custom host:
 ```ruby
 my_model.attachment.remote_url(host: 'custom.domain')   # also configurable for all urls with 'url_host'
 ```
+
+or with other query parameters (needs an expiry):
+
+```ruby
+my_model.attachment.remote_url(expires: 3.days.from_now, query: {'response-content-disposition' => 'attachment'})  # URL that downloads the file
+```
