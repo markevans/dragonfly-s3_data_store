@@ -43,7 +43,7 @@ end
 
 ### Per-storage options
 ```ruby
-Dragonfly.app.store(some_file, path: 'some/path.txt', headers: {'x-amz-acl' => 'public-read-write'})
+Dragonfly.app.store(some_file, {'some' => 'metadata'}, path: 'some/path.txt', headers: {'x-amz-acl' => 'public-read-write'})
 ```
 
 or
