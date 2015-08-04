@@ -277,7 +277,12 @@ describe Dragonfly::S3DataStore do
 
     it "should give an expiring url" do
       @data_store.url_for(@uid, :expires => 1301476942).should =~
-        %r{^https://#{BUCKET_NAME}\.#{@data_store.domain}/some/path/on/s3\?X-Amz-Expires=}
+        %r{^https://#{BUCKET_NAME}\.#{@data_store.domain}/some/path/on/s3\?.*X-Amz-Expires=}
+    end
+
+    it "should add query params" do
+      @data_store.url_for(@uid, :expires => 1301476942, :query => {'response-content-disposition' => 'attachment'}).should =~
+        %r{^https://#{BUCKET_NAME}\.#{@data_store.domain}/some/path/on/s3\?.*response-content-disposition=attachment}
     end
 
     it "should allow for using https" do
