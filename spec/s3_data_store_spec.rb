@@ -67,7 +67,7 @@ describe Dragonfly::S3DataStore do
     it "should use the name from the content if set" do
       content.name = 'doobie.doo'
       uid = @data_store.write(content)
-      uid.should =~ /[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}\/doobie\.doo$/
+      uid.should =~ /doobie\.doo$/
       new_content.update(*@data_store.read(uid))
       new_content.data.should == 'eggheads'
     end
