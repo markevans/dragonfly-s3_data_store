@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "dragonfly", "~> 1.0"
   spec.add_runtime_dependency "fog-aws"
   spec.add_development_dependency "rspec", "~> 2.0"
+  spec.add_development_dependency "mime-types", "~> 3.0"
 
   spec.post_install_message = <<-POST_INSTALL_MESSAGE
 =====================================================
