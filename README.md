@@ -69,6 +69,31 @@ end
 **BEWARE!!!!** you must make sure the path (which will become the uid for the content) is unique and changes each time the content
 is changed, otherwise you could have caching problems, as the generated urls will be the same for the same uid.
 
+### Minimum AWS Policy
+The following policy show the minimal required actions to get `dragonfly-s3_data_store` to work with the default parameters:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1477642044000",
+            "Effect": "Allow",
+            "Action": [
+                "s3:DeleteObject",
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:PutObjectACL",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": [
+                "arn:aws:s3:::your-bucket",
+                "arn:aws:s3:::your-bucket/*"
+            ]
+        }
+    ]
+}
+```
+
 ### Serving directly from S3
 
 You can get the S3 url using
