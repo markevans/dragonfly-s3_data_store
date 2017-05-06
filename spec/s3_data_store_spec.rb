@@ -198,6 +198,33 @@ describe Dragonfly::S3DataStore do
     end
   end
 
+  describe "with secondary buckets" do
+    let(:bucket_name) { "staging-bucket" }
+    let(:secondary_bucket_names) { ["production-bucket", "backup-bucket"] }
+    let(:uid) { "photo.jpg" }
+    let(:data_store) do
+      Fog.mock!
+      Dragonfly::S3DataStore.new(
+        :bucket_name => bucket_name,
+        :secondary_bucket_names => secondary_bucket_names,
+        :access_key_id => 'XXXXXXXXX',
+        :secret_access_key => 'XXXXXXXXX',
+        :region => 'eu-west-1'
+      )
+    end
+
+    before do
+      data_store.storage.put_bucket(secondary_bucket_names[1])
+      data_store.storage.put_object(secondary_bucket_names[1], uid, "something")
+    end
+
+    it "finds file in the provided secondary buckets, when it doesn't exist in primary bucket" do
+      response = data_store.read(uid)
+      response.should be_kind_of(Array)
+      response[0].should eql("something")
+    end
+  end
+
   describe "autocreating the bucket" do
     it "should create the bucket on write if it doesn't exist" do
       @data_store.bucket_name = "dragonfly-test-blah-blah-#{rand(100000000)}"
