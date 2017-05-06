@@ -20,7 +20,8 @@ module Dragonfly
       'ap-southeast-2' => 's3-ap-southeast-2.amazonaws.com',
       'eu-west-1' => 's3-eu-west-1.amazonaws.com',
       'eu-central-1' => 's3-eu-central-1.amazonaws.com',
-      'sa-east-1' => 's3-sa-east-1.amazonaws.com'
+      'sa-east-1' => 's3-sa-east-1.amazonaws.com',
+      'ca-central-1' => 's3-ca-central-1.amazonaws.com',
     }
 
     SUBDOMAIN_PATTERN = /^[a-z0-9][a-z0-9.-]+[a-z0-9]$/
