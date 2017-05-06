@@ -21,12 +21,4 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "dragonfly", "~> 1.0"
   spec.add_runtime_dependency "fog-aws"
   spec.add_development_dependency "rspec", "~> 2.0"
-
-  spec.post_install_message = <<-POST_INSTALL_MESSAGE
-=====================================================
-Thanks for installing dragonfly-s3_data_store!!
-If you have any fog compatibility problems, please be aware that
-it now depends on the 'fog-aws' gem rather than the 'fog' gem.
-=====================================================
-POST_INSTALL_MESSAGE
 end
