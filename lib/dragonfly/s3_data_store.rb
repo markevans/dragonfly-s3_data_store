@@ -11,19 +11,6 @@ module Dragonfly
     # Exceptions
     class NotConfigured < RuntimeError; end
 
-    REGIONS = {
-      'us-east-1' => 's3.amazonaws.com',  #default
-      'us-west-1' => 's3-us-west-1.amazonaws.com',
-      'us-west-2' => 's3-us-west-2.amazonaws.com',
-      'ap-northeast-1' => 's3-ap-northeast-1.amazonaws.com',
-      'ap-southeast-1' => 's3-ap-southeast-1.amazonaws.com',
-      'ap-southeast-2' => 's3-ap-southeast-2.amazonaws.com',
-      'eu-west-1' => 's3-eu-west-1.amazonaws.com',
-      'eu-central-1' => 's3-eu-central-1.amazonaws.com',
-      'sa-east-1' => 's3-sa-east-1.amazonaws.com',
-      'ca-central-1' => 's3-ca-central-1.amazonaws.com',
-    }
-
     SUBDOMAIN_PATTERN = /^[a-z0-9][a-z0-9.-]+[a-z0-9]$/
 
     def initialize(opts={})
@@ -85,7 +72,12 @@ module Dragonfly
     end
 
     def domain
-      REGIONS[get_region]
+      case region
+      when 'us-east-1', nil
+        's3.amazonaws.com'
+      else
+        "s3-#{region}.amazonaws.com"
+      end
     end
 
     def storage
@@ -131,12 +123,6 @@ module Dragonfly
       end
     end
 
-    def get_region
-      reg = region || 'us-east-1'
-      raise "Invalid region #{reg} - should be one of #{valid_regions.join(', ')}" unless valid_regions.include?(reg)
-      reg
-    end
-
     def generate_uid(name)
       "#{Time.now.strftime '%Y/%m/%d/%H/%M/%S'}/#{SecureRandom.uuid}/#{name}"
     end
@@ -161,10 +147,6 @@ module Dragonfly
     def meta_to_headers(meta)
       meta = escape_meta_values(meta)
       {'x-amz-meta-json' => Serializer.json_encode(meta)}
-    end
-
-    def valid_regions
-      REGIONS.keys
     end
 
     def rescuing_socket_errors(&block)

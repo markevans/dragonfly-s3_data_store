@@ -115,11 +115,9 @@ describe Dragonfly::S3DataStore do
       @data_store.domain.should == 's3-eu-west-1.amazonaws.com'
     end
 
-    it "does raise an error if an unknown region is given" do
-      @data_store.region = 'latvia-central'
-      lambda{
-        @data_store.domain
-      }.should raise_error
+    it "use the default one if us-east-1" do
+      @data_store.region = 'us-east-1'
+      @data_store.domain.should == 's3.amazonaws.com'
     end
   end
 
