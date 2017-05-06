@@ -5,6 +5,11 @@ require 'dragonfly/s3_data_store'
 
 describe Dragonfly::S3DataStore do
 
+  # This used to exist in dragonfly as Dragonfly::Serializer.marshal_b64_encode
+  def deprecated_marshal_b64_encode(meta)
+    Base64.encode64(Marshal.dump(meta)).tr("\n=", '')
+  end
+
   # To run these tests, put a file ".s3_spec.yml" in the dragonfly root dir, like this:
   # key: XXXXXXXXXX
   # secret: XXXXXXXXXX
@@ -313,7 +318,7 @@ describe Dragonfly::S3DataStore do
 
     it "works with the deprecated x-amz-meta-extra header (but stringifies its keys)" do
       uid = @data_store.write(content, :headers => {
-        'x-amz-meta-extra' => Dragonfly::Serializer.marshal_b64_encode(:some => 'meta', :wo => 4),
+        'x-amz-meta-extra' => deprecated_marshal_b64_encode(:some => 'meta', :wo => 4),
         'x-amz-meta-json' => ""
       })
       c, meta = @data_store.read(uid)
