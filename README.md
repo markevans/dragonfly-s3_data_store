@@ -61,7 +61,7 @@ class MyModel
 end
 ```
 
-**BEWARE!!!!** you must make sure the path (which will become the uid for the content) is unique and changes each time the content
+**BEWARE!!!!** you must make sure the `path` (which will become the `uid` for the content) is unique and changes each time the content
 is changed, otherwise you could have caching problems, as the generated urls will be the same for the same uid.
 
 ### Serving directly from S3
