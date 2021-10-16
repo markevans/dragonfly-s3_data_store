@@ -136,12 +136,15 @@ module Dragonfly
     end
 
     def headers_to_meta(headers)
+      meta = {}
+      meta['mime_type'] = headers['Content-Type'] if headers.key?('Content-Type')
       json = headers['x-amz-meta-json']
       if json && !json.empty?
-        unescape_meta_values(Serializer.json_decode(json))
+        meta.merge(unescape_meta_values(Serializer.json_decode(json)))
       elsif marshal_data = headers['x-amz-meta-extra']
-        Utils.stringify_keys(Serializer.marshal_b64_decode(marshal_data))
+        meta.merge(Utils.stringify_keys(Serializer.marshal_b64_decode(marshal_data)))
       end
+      meta
     end
 
     def meta_to_headers(meta)
