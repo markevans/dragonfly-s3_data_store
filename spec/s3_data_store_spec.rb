@@ -345,4 +345,35 @@ describe Dragonfly::S3DataStore do
       ))
     end
   end
+
+  describe "sync_clock_option" do
+    it "adds default sync_clock option of true" do
+      storage = double("Fog::Storage")
+      expect(Fog::Storage).to receive(:new).and_return(storage)
+      storage.should_receive(:sync_clock).at_least(:once)
+
+      data_store = Dragonfly::S3DataStore.new(
+        :bucket_name => BUCKET_NAME,
+        :access_key_id => 'XXXXXXXXX',
+        :secret_access_key => 'XXXXXXXXX',
+        :region => 'eu-west-1'
+      )
+      data_store.storage
+    end
+
+    it "accepts sync_clock option" do
+      storage = double("Fog::Storage")
+      expect(Fog::Storage).to receive(:new).and_return(storage)
+      storage.should_not_receive(:sync_clock)
+
+      data_store = Dragonfly::S3DataStore.new(
+        :bucket_name => BUCKET_NAME,
+        :access_key_id => 'XXXXXXXXX',
+        :secret_access_key => 'XXXXXXXXX',
+        :region => 'eu-west-1',
+        :sync_clock => false
+      )
+      data_store.storage
+    end
+  end
 end

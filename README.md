@@ -39,6 +39,7 @@ end
 :use_iam_profile      # boolean - if true, no need for access_key_id or secret_access_key
 :root_path            # store all content under a subdirectory - uids will be relative to this - defaults to nil
 :fog_storage_options  # hash for passing any extra options to Fog::Storage.new, e.g. {path_style: true}
+:sync_clock           # boolean - defaults to true, will call fog storage.sync_clock on storage initialization
 ```
 
 ### Per-storage options
