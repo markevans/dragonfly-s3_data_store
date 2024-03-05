@@ -17,6 +17,7 @@ module Dragonfly
       @bucket_name = opts[:bucket_name]
       @access_key_id = opts[:access_key_id]
       @secret_access_key = opts[:secret_access_key]
+      @session_token = opts[:session_token]
       @region = opts[:region]
       @storage_headers = opts[:storage_headers] || {'x-amz-acl' => 'public-read'}
       @url_scheme = opts[:url_scheme] || 'http'
@@ -26,7 +27,7 @@ module Dragonfly
       @fog_storage_options = opts[:fog_storage_options] || {}
     end
 
-    attr_accessor :bucket_name, :access_key_id, :secret_access_key, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile, :root_path, :fog_storage_options
+    attr_accessor :bucket_name, :access_key_id, :secret_access_key, :session_token, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile, :root_path, :fog_storage_options
 
     def write(content, opts={})
       ensure_configured
@@ -86,6 +87,7 @@ module Dragonfly
           :provider => 'AWS',
           :aws_access_key_id => access_key_id,
           :aws_secret_access_key => secret_access_key,
+          :aws_session_token => session_token,
           :region => region,
           :use_iam_profile => use_iam_profile
         }).reject {|name, option| option.nil?})
