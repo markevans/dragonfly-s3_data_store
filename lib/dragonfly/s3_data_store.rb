@@ -24,9 +24,10 @@ module Dragonfly
       @use_iam_profile = opts[:use_iam_profile]
       @root_path = opts[:root_path]
       @fog_storage_options = opts[:fog_storage_options] || {}
+      @sync_clock = opts.fetch(:sync_clock, true)
     end
 
-    attr_accessor :bucket_name, :access_key_id, :secret_access_key, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile, :root_path, :fog_storage_options
+    attr_accessor :bucket_name, :access_key_id, :secret_access_key, :region, :storage_headers, :url_scheme, :url_host, :use_iam_profile, :root_path, :fog_storage_options, :sync_clock
 
     def write(content, opts={})
       ensure_configured
@@ -89,7 +90,7 @@ module Dragonfly
           :region => region,
           :use_iam_profile => use_iam_profile
         }).reject {|name, option| option.nil?})
-        storage.sync_clock
+        storage.sync_clock if sync_clock
         storage
       end
     end
